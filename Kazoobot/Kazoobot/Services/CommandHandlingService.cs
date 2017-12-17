@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using System.Linq;
 using LiteDB;
 
 namespace DiscordBot.Services
@@ -23,7 +24,35 @@ namespace DiscordBot.Services
             _database = database;
 
             _discord.MessageReceived += MessageReceived;
+            _discord.UserJoined += Join;
+            _discord.UserLeft += Left;
+         
+            _discord.GuildAvailable += available;
+            
         }
+
+        private async Task available(SocketGuild X)
+        {
+            var general = X.TextChannels.Where(x => x.Name.ToLower().Contains("general") || x.Topic.ToLower().Contains("general")).FirstOrDefault();
+            await general.SendMessageAsync("I live");
+        }
+
+       
+
+        private async Task Left(SocketGuildUser user)
+        {
+            var guild = user.Guild;
+            var channel = guild.GetTextChannel(391980073047293952);
+            await channel.SendMessageAsync("User " + user.Mention + " left ther server!");
+        }
+
+        private async Task Join(SocketGuildUser user)
+        {
+            var guild = user.Guild;
+            var channel = guild.GetTextChannel(391980073047293952);
+            await channel.SendMessageAsync("Welcome " + user.Mention + "!");
+        }
+
 
         public async Task InitializeAsync(IServiceProvider provider)
         {

@@ -27,7 +27,7 @@ namespace Kazoobot.Modules
         [Command("suc")]
         public async Task succccc()
         {
-            await ReplyAsync("SUCK");
+            await ReplyAsync("SUCK "+ Context.User.Mention + " #" +Context.Channel);
         }
 
     } 
